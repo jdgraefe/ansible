@@ -1,0 +1,6 @@
+- name: install packages listed
+   yum:
+     name: "{{ packages }}"
+   vars:
+     packages:
+     - rear

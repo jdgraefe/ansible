@@ -1,0 +1,60 @@
+#! /usr/bin/env ansible-playbook
+
+---
+- name: Setup a new server
+  hosts: servers
+  remote_user: root
+  tasks:
+  - name: Start sshd
+    service:
+      name: sshd
+      state: started
+
+  - name: Configure SELINUX
+    lineinfile:
+      path: /etc/selinux/config
+      regexp: '^SELINUX='
+      line: 'SELINUX=permissive'
+
+  - name: install packages listed
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - ntp
+      - ntpdate
+      - rear
+      - AvamarClient
+      - snmp
+      - snmp-utils
+  
+#  - name: Install rear
+#    yum:
+#      name: rear
+#      state: present
+  
+  - name: Create rear configuration file
+    copy:
+      backup: yes
+      dest: "/etc/rear/site.conf"
+      content: |
+        OUTPUT=ISO
+        OUTPUT_URL=nfs://10.2.11.203/data/col1/AIX/LinuxRear
+        BACKUP=NETFS
+        BACKUP_URL=nfs://10.2.11.203/data/col1/AIX/LinuxRear
+        BACKUP_PROG_EXCLUDE=("${BACKUP_PROG_EXCLUDE[@]}" '/media' '/var/tmp' '/var/crash' '/scratch')
+        NETFS_KEEP_OLD_BACKUP_COPY=
+
+  - name: Create snmp configuration file
+    copy:
+      backup: yes
+      dest: "/etc/snmp/snmpd.conf"
+      content: |
+        syslocation  Vmware
+        syscontact Root <root@localhost> (configure /etc/snmp/snmp.local.conf)
+        rocommunity  one2no*
+        com2sec notConfigUser  default       one2no*
+        group   notConfigGroup v2c           notConfigUser
+        view all    included  .1
+        access  notConfigGroup ""      any       noauth    exact  systemview none none
+        dontLogTCPWrappersConnects yes

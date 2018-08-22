@@ -1,0 +1,13 @@
+---
+- name: install packages listed
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - net-snmp-utils
+    - net-snmp
+- name: Create snmp configuration file
+  copy: src=snmpd.conf dest=/etc/snmp/snmpd.conf backup=yes
+
+  notify:
+    - restart snmpd
