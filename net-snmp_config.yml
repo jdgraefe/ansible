@@ -1,0 +1,34 @@
+#! /usr/bin/env ansible-playbook
+
+---
+- name: Setup snmp
+  hosts: hadoopdev
+  remote_user: root
+  tasks:
+  - name: install packages listed
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - net-snmp-utils
+      - net-snmp
+ #
+  - name: Create snmp configuration file
+    copy:
+      backup: yes
+      dest: "/etc/snmp/snmpd.conf"
+      content: |
+        syslocation  Vmware
+        syscontact Root <root@localhost> (configure /etc/snmp/snmp.local.conf)
+        rocommunity  XXXXX
+        com2sec notConfigUser  default       XXXXXX
+        group   notConfigGroup v2c           notConfigUser
+        view all    included  .1
+        access  notConfigGroup ""      any       noauth    exact  systemview none none
+        dontLogTCPWrappersConnects yes # comment
+    notify:
+      - restart snmpd
+
+  handlers:
+   - name: restart snmpd
+     service: name=snmpd state=restarted
