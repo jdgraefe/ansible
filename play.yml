@@ -1,5 +1,5 @@
 ---
-- hosts: testservers
+- hosts: protest
   remote_user: root
   roles:
     - role: snmp
