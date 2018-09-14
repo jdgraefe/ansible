@@ -1,0 +1,6 @@
+---
+- hosts: hadoopprd
+  remote_user: root
+  roles:
+    - role: snmp
+    - role: rear
