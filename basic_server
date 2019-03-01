@@ -1,0 +1,40 @@
+#! /usr/bin/env ansible-playbook
+
+---
+- name: test LV
+  hosts: dev02
+  tasks:
+  - name: Create VG
+    lvg:
+      vg: vgdata
+      pvs: /dev/sdb
+
+  - name: Create lvol
+    lvol:
+      vg: vgdata
+      lv: lvtest1
+      size: 1g
+  - name: Create lvol2
+    lvol:
+      vg: vgdata
+      lv: lvtest2
+      size: 1g
+
+  - name: Create Filesystem on lvol1
+    filesystem:
+      fstype: xfs
+      dev: /dev/vgdata/lvtest1
+
+  - name: Create Filesystem on lvol2
+    filesystem:
+      fstype: xfs
+      dev: /dev/vgdata/lvtest2
+
+  - name: Setup Mount points and mount
+    mount:
+      #backup: yes
+      state: mounted
+      fstype: xfs
+      path: /var/log/service
+      src: /dev/mapper/vgdata-lvtest1
+      opts: defaults
