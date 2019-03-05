@@ -1,0 +1,23 @@
+---
+# tasks file for ntp-config
+
+- name: Install additional packages
+  yum:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - ntp
+
+- name: Setup ntp
+  template:
+    src: ntp.conf
+    dest: /etc/ntp.conf
+    mode: 0644
+  notify:
+    - restart ntpd
+
+- name: be sure ntpd is running and enabled
+  service:
+    name: ntpd
+    state: started
+    enabled: yes
