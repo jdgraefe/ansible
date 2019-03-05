@@ -1,0 +1,9 @@
+---
+# tasks file for resolvconf-config
+
+- name: set resolv.conf
+  template:
+    src: resolv.conf
+    dest: /etc/resolv.conf
+    mode: 0644
+
