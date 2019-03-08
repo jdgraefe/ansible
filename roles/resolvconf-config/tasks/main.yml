@@ -2,6 +2,7 @@
 # tasks file for resolvconf-config
 
 - name: set resolv.conf
+  become: true
   template:
     src: resolv.conf
     dest: /etc/resolv.conf

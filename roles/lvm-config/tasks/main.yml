@@ -1,0 +1,65 @@
+---
+# tasks file for lvm-config
+
+ - name: Create VG
+   lvg:
+     vg: vgdata
+     pvs: /dev/sdb
+
+ - name: Create lvol
+   lvol:
+     vg: vgdata
+     lv: lvol0
+     size: 30g
+
+ - name: Create lvol2
+   lvol:
+     vg: vgdata
+     lv: lvol1
+     size: 10g
+
+ - name: Create lvol3
+   lvol:
+     vg: vgdata
+     lv: lvol2
+     size: 30g
+
+ - name: Create Filesystem on lvol0
+   filesystem:
+     fstype: xfs
+     dev: /dev/vgdata/lvol0
+
+ - name: Create Filesystem on lvol1
+   filesystem:
+     fstype: xfs
+     dev: /dev/vgdata/lvol1
+
+ - name: Create Filesystem on lvol2
+   filesystem:
+     fstype: xfs
+     dev: /dev/vgdata/lvol2
+
+ - name: Setup Mount points and mount /var/log/service
+   mount:
+     state: mounted
+     fstype: xfs
+     path: /var/log/service
+     src: /dev/mapper/vgdata-lvol0
+     opts: defaults
+
+
+ - name: Setup Mount points and mount /var/lib/tomcat8
+   mount:
+     state: mounted
+     fstype: xfs
+     path: /var/lib/tomcat8
+     src: /dev/mapper/vgdata-lvol1
+     opts: defaults
+ 
+ - name: Setup Mount points and mount /var/log/tomcat8
+   mount:
+     state: mounted
+     fstype: xfs
+     path: /var/log/tomcat8
+     src: /dev/mapper/vgdata-lvol2
+     opts: defaults

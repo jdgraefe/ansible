@@ -1,0 +1,7 @@
+---
+- name: Register with activationkey and consume subscriptions matching pool_id
+  redhat_subscription:
+    state: present
+    username: jim.graefe@eversana.com
+    password: XXXX
+    pool_ids: 8a85f99965c8ca6e01669d0d18f220a8
