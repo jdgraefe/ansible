@@ -1,0 +1,4 @@
+---
+- hosts: 
+  roles:
+   - ntp-config
