@@ -1,0 +1,18 @@
+---
+- name: create user
+  become: true
+  user:
+    name: "{{ item.user }}"
+    password: $6$ym1nDGQRvOYud92A$ijHD3rl1hD.71F33bkpA9OK8iS3NnBehWwonLtEfbWZIYZo40ZyxNMMQCIBjcT15S5AasdbY./vqsdczc3/rb0
+    state: present
+    shell: /bin/bash
+    groups: wheel
+    update_password: on_create
+  register: "{{ item.user }}"
+  with_items: "{{ userlist }}"
+
+- name: Force change password
+  become: true
+  shell: chage -d 0 "{{ item.user }}"
+  when: item.user.changed
+
