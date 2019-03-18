@@ -1,0 +1,5 @@
+---
+
+- hosts: dev02
+  roles:
+    - role: common
